@@ -129,7 +129,10 @@ function query(){
               averageClusters.push(coordinatesAvg(actualValues));
               actualValues = [];
             });
-            //at the end of these loops, average clusters will hold data on main cluster positions 
+
+            averageClusters.forEach(function(pair){
+              sendTweet("There is a prblem here " + pair, "@ZikaFind");
+            });            //at the end of these loops, average clusters will hold data on main cluster positions 
             //generated using cluster algorithm
             console.log(averageClusters);
          });
@@ -176,7 +179,9 @@ query();
   
 function sendTweet(tweet, twitterHandle){
 
-    var delay = 1000*60*10; //query every 10minutes milliseconds
+    console.log("Tweet received by sendTweet " + tweet);
+
+    var delay = 1000*60*10; //query every 10 minutes
     var task = new PeriodicTask(delay, function () {
         var T = new Twit({
         consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
@@ -184,9 +189,10 @@ function sendTweet(tweet, twitterHandle){
         access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
         access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
       });
-      T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
+      T.post('statuses/update', { status: tweet + " " + twitterHandle}, function(err, data, response) {
         if (err) {
           //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
+          console.log(err);
         }
         //req.flash('success', { msg: 'Tweet has been posted.'});
         console.log("Success");
@@ -194,7 +200,7 @@ function sendTweet(tweet, twitterHandle){
       });
     });
 
-  //task.run(); //THIS MUST BE COMMENTED OUT
+  task.run(); //THIS MUST BE COMMENTED OUT
 }
 
 
