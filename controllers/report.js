@@ -9,5 +9,6 @@ exports.postReport = function(req, res) {
   var malaria = req.body.Malaria;
   var dengue = req.body.Dengue;
   var water = req.body.water;
-  var positionCorrect = req.body.map;
+  var lat = req.body.lat;
+  var lng = req.body.lon;
 };

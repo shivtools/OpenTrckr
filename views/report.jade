@@ -5,14 +5,14 @@ block content
 	.page-header
 		h3 Make A Report
 			
-	form.form-horizontal(role='form', method='POST')
+	form.form-horizontal(role='form', method='POST', name='form')
 		input(type='hidden', name='_csrf', value=_csrf)
 		.form-group
 			label(class='col-sm-2 control-lable' for='map') Is this the correct location?
 			.col-lg-12
 				#mapholder(style="width:100%;height:600px;")
 				<label class="radio-inline">
-				<input type="radio" name="map">Yes
+				<input type="radio" name="map" onclick="setData()">Yes
 				</label>
 				<label class="radio-inline">
 				<input type="radio" name="map" onclick="wrongPos()">No
@@ -65,7 +65,14 @@ block content
 					}
 					
 					function wrongPos(){
-						
+					$('#wrong-pos').modal({
+					show: true
+					});
+					}
+					
+					function setData(){
+					document.form.lat.value = map.getCenter().lat();
+					document.form.lon.value = map.getCenter().lng();
 					}
 				<div id="wrong-pos" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog has-error">
@@ -81,6 +88,8 @@ block content
 		.form-group
 		h3 Types of Occurrences 
 		hr
+		input(type="hidden", name="lat")
+		input(type="hidden", name="lon")
 		.form-group
 			label(class='col-sm-2 control-label', for='Zika') Zika
 			.col-sm-2
