@@ -131,7 +131,7 @@ function query(){
             });
 
             averageClusters.forEach(function(pair){
-              sendTweet("There is a prblem here " + pair, "@ZikaFind");
+              sendTweet("There is a reported incidence of Zika here " + pair, "@ZikaFind. Please send assistance to this location.");
             });            //at the end of these loops, average clusters will hold data on main cluster positions 
             //generated using cluster algorithm
             console.log(averageClusters);
