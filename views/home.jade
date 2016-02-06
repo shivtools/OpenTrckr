@@ -2,51 +2,54 @@ extends layout
 
 block content
 	link(rel="stylesheet", href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css")
-	h1 HopHacks 2016 Zika and Disease Tracker
-	p.lead Tracking Disease, Mosquitoes, and Directing Help
-	hr
 	.row
-		.col-sm-12
+		.col-lg-2
+		.col-sm-8(style="text-align:center")
+			h1 HopHacks 2016 Zika and Disease Tracker
+			p.lead Tracking Disease, Mosquitoes, and Directing Help
+			hr
+		.col-lg-2
+	.row
+		.col-sm-1
+		.col-sm-10
 			h2 Live Map
 			p Up to date map of your local area
 			#map(style="width:100%; height: 800px")
 			script(src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js")
-
-	script.
-		function main() {
-		cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json', {
-			shareable: true,
-			title: true,
-			description: true,
-			search: true,
-			tiles_loader: true,
-			center_lat: 0,
-			center_lon: 0,
-			zoom: 2
-		})
-		.done(function(vis, layers) {
-		  // layer 0 is the base layer, layer 1 is cartodb layer
-		  // setInteraction is disabled by default
-		  layers[1].setInteraction(true);
-		  layers[1].on('featureOver', function(e, latlng, pos, data) {
-			cartodb.log.log(e, latlng, pos, data);
-		  });
-
-		  // you can get the native map to work with it
-		  var map = vis.getNativeMap();
-		})
-		.error(function(err) {
-		  console.log(err);
-		});
-		}
-
-		window.onload = main();
-	
-	hr
-	.row
-		.col-sm-6
-			h3 Mosquito-Borne Diseases Kill
-			p Mosquito-Borne diseases such as zika, dengue fever, and malaria kill over <b><h4>1 million people</h4></b> per year.  We aim to do do our part in lowering the lethality and infection rates of mosquito-borne illness by promoting openness and government reaction.
-		.col-sm-6
-			h3 Raising Local Awareness to Fight Back
-			p This website raises conscientiousness of mosquito-borne diseases and encourages governments to take action against viruses and mosquito breeding grounds.
+			script.
+				function main() {
+				cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json', {
+				shareable: true,
+				title: true,
+				description: true,
+				search: true,
+				tiles_loader: true,
+				center_lat: 0,
+				center_lon: 0,
+				zoom: 2
+				})
+				.done(function(vis, layers) {
+				// layer 0 is the base layer, layer 1 is cartodb layer
+				// setInteraction is disabled by default
+				layers[1].setInteraction(true);
+				layers[1].on('featureOver', function(e, latlng, pos, data) {
+				cartodb.log.log(e, latlng, pos, data);
+				});
+				// you can get the native map to work with it
+				var map = vis.getNativeMap();
+				})
+				.error(function(err) {
+				console.log(err);
+				});
+				}
+				window.onload = main();
+		.col-sm-1
+	.col-sm-2
+	.col-sm-8
+			hr
+			.col-sm-6
+				h3 Mosquito-Borne Diseases Kill
+				p Mosquito-Borne diseases such as zika, dengue fever, and malaria kill over <b><h4>1 million people</h4></b> per year.  We aim to do do our part in lowering the lethality and infection rates of mosquito-borne illness by promoting openness and government reaction.
+			.col-sm-6
+				h3 Raising Local Awareness to Fight Back
+				p This website raises conscientiousness of mosquito-borne diseases and encourages governments to take action against viruses and mosquito breeding grounds.
