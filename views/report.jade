@@ -2,113 +2,122 @@ extends layout
 
 block content
 	script(src="http://maps.googleapis.com/maps/api/js")
-	.page-header
-		h3 Make A Report
-			
-	form.form-horizontal(role='form', method='POST', name='form')
-		input(type='hidden', name='_csrf', value=_csrf)
-		.form-group
-			label(class='col-sm-2 control-lable' for='map') Is this the correct location?
-			.col-lg-12
-				#mapholder(style="width:100%;height:600px;")
-				<label class="radio-inline">
-				<input type="radio" name="map" onclick="setData()">Yes
-				</label>
-				<label class="radio-inline">
-				<input type="radio" name="map" onclick="wrongPos()">No
-				</label>
-				script.
-					var map;
-					var x = document.getElementById("mapholder");
-					function getLocation() {
-					if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(showPosition, showError);
-					} else {
-					x.innerHTML = "Geolocation is not supported by this browser.";
-					}
-					}
+	
+	.col-sm-1
+	.col-lg-10
+		.page-header
+			h3 Make A Report
+		form.form-horizontal(role='form', method='POST', name='form')
+			input(type='hidden', name='_csrf', value=_csrf)
+			.form-group
+				label(class='col-sm-2 control-lable' for='map') Is this the correct location?
+				.col-lg-12
+					#mapholder(style="width:100%;height:600px;")
+					<label class="radio-inline">
+					<input type="radio" name="map" onclick="setData()">Yes
+					</label>
+					<label class="radio-inline">
+					<input type="radio" name="map" onclick="wrongPos()">No
+					</label>
+					script.
+						var map;
+						var x = document.getElementById("mapholder");
+						function getLocation() {
+						if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(showPosition, showError);
+						} else {
+						x.innerHTML = "Geolocation is not supported by this browser.";
+						}
+						}
 
-					function showPosition(position) {
-					var latlon = position.coords.latitude + "," + position.coords.longitude;
-					var mapProp = {
-					center:new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-					zoom:16,
-					mapTypeId:google.maps.MapTypeId.ROADMAP
-					};
-					map=new google.maps.Map(document.getElementById("mapholder"), mapProp);
-					setData();
-					}
+						function showPosition(position) {
+						var latlon = position.coords.latitude + "," + position.coords.longitude;
+						var mapProp = {
+						center:new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+						zoom:16,
+						mapTypeId:google.maps.MapTypeId.ROADMAP
+						};
+						map=new google.maps.Map(document.getElementById("mapholder"), mapProp);
+						map.addListener('center_changed', function(){
+						window.setTimeout(setData(), 200);});
+						setData();
+						var marker = new google.maps.Marker({
+						map: map,
+						icon: '/images/reticle.png'
+						});
+						marker.bindTo('position', map, 'center'); 
+						}
+						function showError(error) {
+						switch(error.code) {
+						case error.PERMISSION_DENIED:
+						x.innerHTML = "User denied the request for Geolocation."
+						break;
+						case error.POSITION_UNAVAILABLE:
+						x.innerHTML = "Location information is unavailable."
+						break;
+						case error.TIMEOUT:
+						x.innerHTML = "The request to get user location timed out."
+						break;
+						case error.UNKNOWN_ERROR:
+						x.innerHTML = "An unknown error occurred."
+						break;
+						}
+						}
+						
+						window.onload = getLocation;
+						
+						function updateCenter(){
+						var mylat = map.getCenter().lat();
+						var mylng = map.getCenter().lng();
+						console.log(mylat);
+						console.log(mylng);
+						}
+						
+						function wrongPos(){
+						$('#wrong-pos').modal({
+						show: true
+						});
+						}
+						
+						function setData(){
+						document.form.lat.value = map.getCenter().lat();
+						document.form.lon.value = map.getCenter().lng();
+						}
+					<div id="wrong-pos" class="modal fade" tabindex="-1" role="dialog">
+					<div class="modal-dialog has-error">
+					<div class="modal-content">
+					<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					<h3>Kindly reposition the map so that your current location is at the center, then tap the 'yes' radio box</h3>
+					</div>
+					</div>
+					</div>
+					</div>
 
-					function showError(error) {
-					switch(error.code) {
-					case error.PERMISSION_DENIED:
-					x.innerHTML = "User denied the request for Geolocation."
-					break;
-					case error.POSITION_UNAVAILABLE:
-					x.innerHTML = "Location information is unavailable."
-					break;
-					case error.TIMEOUT:
-					x.innerHTML = "The request to get user location timed out."
-					break;
-					case error.UNKNOWN_ERROR:
-					x.innerHTML = "An unknown error occurred."
-					break;
-					}
-					}
-					
-					window.onload = getLocation;
-					
-					function updateCenter(){
-					var mylat = map.getCenter().lat();
-					var mylng = map.getCenter().lng();
-					console.log(mylat);
-					console.log(mylng);
-					}
-					
-					function wrongPos(){
-					$('#wrong-pos').modal({
-					show: true
-					});
-					}
-					
-					function setData(){
-					document.form.lat.value = map.getCenter().lat();
-					document.form.lon.value = map.getCenter().lng();
-					}
-				<div id="wrong-pos" class="modal fade" tabindex="-1" role="dialog">
-				<div class="modal-dialog has-error">
-				<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">×</button>
-				<h3>Kindly reposition the map so that your current location is at the center, then tap the 'yes' radio box</h3>
-				</div>
-				</div>
-				</div>
-				</div>
-
-		.form-group
-		h3 Types of Occurrences 
-		hr
-		input(type="hidden", name="lat")
-		input(type="hidden", name="lon")
-		.form-group
-			label(class='col-sm-2 control-label', for='Zika') Zika
-			.col-sm-2
-				input.form-control(type='checkbox', name='Zika', id='zika')
-		.form-group
-			label(class='col-sm-2 control-label', for='malaria') Malaria
-			.col-sm-2
-				input.form-control(type='checkbox', name='Malaria', id='malaria')
-		.form-group
-			label(class='col-sm-2 control-label', for='dengue') Dengue Fever
-			.col-sm-2
-				input.form-control(type='checkbox', name='Dengue', id='dengue')
-		.form-group
-			label(class='col-sm-2 control-label', for='water') Standing Water
-			.col-sm-2
-				input.form-control(type='checkbox', name='water', id='water')
-		.form-group
-			.col-sm-offset-2.col-sm-6
-			button.btn.btn-success(type='submit')
-				i.fa.fa-envelope
-				| Report
+			.form-group
+			h3 Types of Occurrences 
+			hr
+			input(type="hidden", name="lat")
+			input(type="hidden", name="lon")
+			.form-group
+				label(class='col-sm-2 control-label', for='Zika') Zika
+				.col-sm-2
+					input.form-control(type='checkbox', name='Zika', id='zika')
+			.form-group
+				label(class='col-sm-2 control-label', for='malaria') Malaria
+				.col-sm-2
+					input.form-control(type='checkbox', name='Malaria', id='malaria')
+			.form-group
+				label(class='col-sm-2 control-label', for='dengue') Dengue Fever
+				.col-sm-2
+					input.form-control(type='checkbox', name='Dengue', id='dengue')
+			.form-group
+				label(class='col-sm-2 control-label', for='water') Standing Water
+				.col-sm-2
+					input.form-control(type='checkbox', name='water', id='water')
+			.form-group
+				.col-sm-offset-2.col-sm-6
+				button.btn.btn-success(type='submit')
+					i.fa.fa-envelope
+					| Report
+	.col-sm-1
