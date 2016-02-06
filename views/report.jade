@@ -36,9 +36,15 @@ block content
 					mapTypeId:google.maps.MapTypeId.ROADMAP
 					};
 					map=new google.maps.Map(document.getElementById("mapholder"), mapProp);
+					map.addListener('center_changed', function(){
+					window.setTimeout(setData(), 200);});
 					setData();
+					var marker = new google.maps.Marker({
+					map: map,
+					icon: '/images/reticle.png'
+					});
+					marker.bindTo('position', map, 'center'); 
 					}
-
 					function showError(error) {
 					switch(error.code) {
 					case error.PERMISSION_DENIED:

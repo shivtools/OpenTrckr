@@ -37,6 +37,11 @@ exports.postReport = function(req, res) {
 	  dengue = 1;
   }
   
+  if(dengue + water + malaria + zika < 1){
+	  req.flash('errors', {msg: 'Failure! You must select at least 1 problem.' });
+	return res.redirect('/');
+  }
+  
   if(lat == undefined || lng == undefined || lat == "" || lng == ""){
 	  console.log("NO LAT/LNG");
   }
@@ -49,20 +54,48 @@ exports.postReport = function(req, res) {
 		});
 
 		client.on("connect", function () {
-			console.log("connected to cartoDB");
-			var sql = "SELECT cartodb_id from zika ORDER BY cartodb_id DESC LIMIT 1";
-			client.query(sql, function (err, data) {
-				var id = 0;
-				if(data.total_rows != 0){
-					id = data.rows[0].cartodb_id+1;
+			client.query("SELECT * from zika WHERE username='"+req.user._id+"'", function(err, data){
+				if(data.total_rows > 0){
+					for(var i=0; i<data.total_rows; i++){
+						if(distance(lat, lng, data.rows[i].lat, data.rows[i].lng) < 2 && Math.floor(Date.now() / 1000)-data.rows[i].timestamp < (60*60*24)){
+							req.flash('errors', {msg: 'Failure! You have submitted something too close to another submission.' });
+							return res.redirect('/');
+						}
+					}
 				}
-				if(err == null){
-					var sql = "INSERT INTO zika (cartodb_id, lat, lng, dengue, malaria, zika, water, username) VALUES ('"+id+"', '"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"')";
-					client.query(sql, function (err, data) {
-					});
-				}
+				var sql = "SELECT cartodb_id from zika ORDER BY cartodb_id DESC LIMIT 1";
+				client.query(sql, function (err, data) {
+					var id = 0;
+					if(data.total_rows != 0){
+						id = data.rows[0].cartodb_id+1;
+					}
+					if(err == null){
+						var sql = "INSERT INTO zika (cartodb_id, lat, lng, dengue, malaria, zika, water, username, timestamp) VALUES ('"+id+"', '"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+")";
+						client.query(sql, function (err, data) {
+							if(err == null){
+								req.flash('success', { msg: 'Success! Thank you for your submission.' });
+								return res.redirect('/');
+							}
+						});
+					}
+				});
 			});
 		});
 		client.connect();
   }
+};
+
+function distance(lat1, lon1, lat2, lon2) {
+	var R = 6371; // Radius of the earth in km
+	var dLat = deg2rad(lat2-lat1);  // deg2rad below
+	var dLon = deg2rad(lon2-lon1); 
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	var d = R * c; // Distance in km
+	var miles = d * .621371;
+	return miles;
+};
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 };
