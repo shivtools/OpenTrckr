@@ -15,9 +15,10 @@ block content
 				<input type="radio" name="map">Yes
 				</label>
 				<label class="radio-inline">
-				<input type="radio" name="map">No
+				<input type="radio" name="map" onclick="wrongPos()">No
 				</label>
 				script.
+					var map;
 					var x = document.getElementById("mapholder");
 					function getLocation() {
 					if (navigator.geolocation) {
@@ -34,7 +35,7 @@ block content
 					zoom:16,
 					mapTypeId:google.maps.MapTypeId.ROADMAP
 					};
-					var map=new google.maps.Map(document.getElementById("mapholder"), mapProp);
+					map=new google.maps.Map(document.getElementById("mapholder"), mapProp);
 					}
 
 					function showError(error) {
@@ -55,6 +56,28 @@ block content
 					}
 					
 					window.onload = getLocation;
+					
+					function updateCenter(){
+					var mylat = map.getCenter().lat();
+					var mylng = map.getCenter().lng();
+					console.log(mylat);
+					console.log(mylng);
+					}
+					
+					function wrongPos(){
+						
+					}
+				<div id="wrong-pos" class="modal fade" tabindex="-1" role="dialog">
+				<div class="modal-dialog has-error">
+				<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h3>Kindly reposition the map so that your current location is at the center, then tap the 'yes' radio box</h3>
+				</div>
+				</div>
+				</div>
+				</div>
+
 		.form-group
 		h3 Types of Occurrences 
 		hr
