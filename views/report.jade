@@ -10,15 +10,9 @@ block content
 		form.form-horizontal(role='form', method='POST', name='form')
 			input(type='hidden', name='_csrf', value=_csrf)
 			.form-group
-				label(class='col-sm-2 control-lable' for='map') Is this the correct location?
+				label(class='col-sm-2 control-lable' for='map') Position the map over your current position
 				.col-lg-12
 					#mapholder(style="width:100%;height:600px;")
-					<label class="radio-inline">
-					<input type="radio" name="map" onclick="setData()">Yes
-					</label>
-					<label class="radio-inline">
-					<input type="radio" name="map" onclick="wrongPos()">No
-					</label>
 					script.
 						var map;
 						var x = document.getElementById("mapholder");
