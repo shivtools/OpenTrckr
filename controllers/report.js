@@ -57,7 +57,7 @@ exports.postReport = function(req, res) {
 					id = data.rows[0].cartodb_id+1;
 				}
 				if(err == null){
-					var sql = "INSERT INTO zika (cartodb_id, lat, lng, dengue, malaria, zika, water) VALUES ('"+id+"', '"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"')";
+					var sql = "INSERT INTO zika (cartodb_id, lat, lng, dengue, malaria, zika, water, username) VALUES ('"+id+"', '"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"')";
 					client.query(sql, function (err, data) {
 					});
 				}
