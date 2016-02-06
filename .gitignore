@@ -1,2 +1,5 @@
-node_modules/
+#node modules - pls work!
+node_modules
+
+#api keys
 .env.example

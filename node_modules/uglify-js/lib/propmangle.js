@@ -64,8 +64,7 @@ function mangle_properties(ast, options) {
     options = defaults(options, {
         reserved : null,
         cache : null,
-        only_cache : false,
-        regex : null
+        only_cache : false
     });
 
     var reserved = options.reserved;
@@ -80,10 +79,7 @@ function mangle_properties(ast, options) {
         };
     }
 
-    var regex = options.regex;
-
     var names_to_mangle = [];
-    var unmangleable = [];
 
     // step 1: find candidates to mangle
     ast.walk(new TreeWalker(function(node){
@@ -109,14 +105,20 @@ function mangle_properties(ast, options) {
     // step 2: transform the tree, renaming properties
     return ast.transform(new TreeTransformer(function(node){
         if (node instanceof AST_ObjectKeyVal) {
-            node.key = mangle(node.key);
+            if (should_mangle(node.key)) {
+                node.key = mangle(node.key);
+            }
         }
         else if (node instanceof AST_ObjectProperty) {
             // setter or getter
-            node.key.name = mangle(node.key.name);
+            if (should_mangle(node.key.name)) {
+                node.key.name = mangle(node.key.name);
+            }
         }
         else if (node instanceof AST_Dot) {
-            node.property = mangle(node.property);
+            if (should_mangle(node.property)) {
+                node.property = mangle(node.property);
+            }
         }
         else if (node instanceof AST_Sub) {
             node.property = mangleStrings(node.property);
@@ -138,7 +140,6 @@ function mangle_properties(ast, options) {
     // only function declarations after this line
 
     function can_mangle(name) {
-        if (unmangleable.indexOf(name) >= 0) return false;
         if (reserved.indexOf(name) >= 0) return false;
         if (options.only_cache) {
             return cache.props.has(name);
@@ -148,7 +149,6 @@ function mangle_properties(ast, options) {
     }
 
     function should_mangle(name) {
-        if (regex && !regex.test(name)) return false;
         if (reserved.indexOf(name) >= 0) return false;
         return cache.props.has(name)
             || names_to_mangle.indexOf(name) >= 0;
@@ -157,17 +157,9 @@ function mangle_properties(ast, options) {
     function add(name) {
         if (can_mangle(name))
             push_uniq(names_to_mangle, name);
-
-        if (!should_mangle(name)) {
-            push_uniq(unmangleable, name);
-        }
     }
 
     function mangle(name) {
-        if (!should_mangle(name)) {
-            return name;
-        }
-
         var mangled = cache.props.get(name);
         if (!mangled) {
             do {
@@ -210,7 +202,9 @@ function mangle_properties(ast, options) {
                 node.cdr = mangleStrings(node.cdr);
             }
             else if (node instanceof AST_String) {
-                node.value = mangle(node.value);
+                if (should_mangle(node.value)) {
+                    node.value = mangle(node.value);
+                }
             }
             else if (node instanceof AST_Conditional) {
                 node.consequent = mangleStrings(node.consequent);
