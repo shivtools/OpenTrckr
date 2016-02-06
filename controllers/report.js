@@ -70,13 +70,18 @@ exports.postReport = function(req, res) {
 						id = data.rows[0].cartodb_id+1;
 					}
 					if(err == null){
-						var sql = "INSERT INTO zika (cartodb_id, lat, lng, dengue, malaria, zika, water, username, timestamp) VALUES ('"+id+"', '"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+")";
-						client.query(sql, function (err, data) {
-							if(err == null){
-								req.flash('success', { msg: 'Success! Thank you for your submission.' });
-								return res.redirect('/');
-							}
-						});
+						client.query("SELECT CDB_LatLng("+lat+", "+lng+")", function(err, data){
+							var latlng = data.rows[0].cdb_latlng;
+							var sql = "INSERT INTO zika (cartodb_id, the_geom, lat, lng, dengue, malaria, zika, water, username, timestamp) VALUES ('"+id+"', '"+latlng+"','"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+")";
+							client.query(sql, function (err, data) {
+								console.log(err);
+								console.log(data);
+								if(err == null){
+									req.flash('success', { msg: 'Success! Thank you for your submission.' });
+									return res.redirect('/');
+								}
+							});
+					});
 					}
 				});
 			});
