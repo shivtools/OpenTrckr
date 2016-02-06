@@ -104,6 +104,7 @@ function query(){
     var coordinates = [];
 
          client.on("connect", function(){
+          //connect to server, get all coordinates, and find main clusters of coordinates so that they can be tweeted.
             client.query("SELECT * FROM zika", function(err, data){
             if(err){
               //reject("Rejected");
@@ -111,13 +112,15 @@ function query(){
             data.rows.forEach(function(entry){
               coordinates.push([entry.lat, entry.lng]);
             });
-            //adds to coordiantes fine :)!
+            
+            //cluster algorithm (dbscan)
             var dbscan = new clustering.DBSCAN();
             // parameters: 0.001 - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
             var clusters = dbscan.run(coordinates, 0.1, 2);
 
             var averageClusters = [];
             var actualValues = [];
+
             //add each cluster to an array
             clusters.forEach(function(cluster){
               cluster.forEach(function(indexes){
@@ -126,6 +129,8 @@ function query(){
               averageClusters.push(coordinatesAvg(actualValues));
               actualValues = [];
             });
+            //at the end of these loops, average clusters will hold data on main cluster positions 
+            //generated using cluster algorithm
             console.log(averageClusters);
          });
       });
@@ -166,27 +171,31 @@ query();
 
 //console.log(clusters, dbscan.noise);
 
+//sendTweet method that runs every 10 minutes using a periodic task
+//will tweet to a government agency given the tweet and the associated twitter handle
   
+function sendTweet(tweet, twitterHandle){
 
-var delay = 1000*60*10; //query every 10minutes milliseconds
-var task = new PeriodicTask(delay, function () {
-    var T = new Twit({
-    consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
-    consumer_secret: "jC4w7f9O8LsCFEcckFa8zcELFJWsT5TSo7pfrQIl6eM1tltS3R",
-    access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
-    access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
-  });
-  T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
-    if (err) {
-      //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
-    }
-    //req.flash('success', { msg: 'Tweet has been posted.'});
-    console.log("Success");
-    //return res.redirect('/');
-  });
-});
+    var delay = 1000*60*10; //query every 10minutes milliseconds
+    var task = new PeriodicTask(delay, function () {
+        var T = new Twit({
+        consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
+        consumer_secret: "jC4w7f9O8LsCFEcckFa8zcELFJWsT5TSo7pfrQIl6eM1tltS3R",
+        access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
+        access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
+      });
+      T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
+        if (err) {
+          //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
+        }
+        //req.flash('success', { msg: 'Tweet has been posted.'});
+        console.log("Success");
+        //return res.redirect('/');
+      });
+    });
 
   //task.run(); //THIS MUST BE COMMENTED OUT
+}
 
 
 function distance(lat1, lon1, lat2, lon2) {
