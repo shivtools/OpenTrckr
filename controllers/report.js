@@ -1,3 +1,6 @@
+var PeriodicTask = require('periodic-task');
+var Twit = require('twit');
+
 exports.getReport = function(req, res) {
   res.render('report', {
     title: 'Report a Problem'
@@ -90,6 +93,29 @@ exports.postReport = function(req, res) {
   }
 };
 
+//periodically run function to check if there are enough victims in an area.
+//if yes, then tweet government with this information
+
+  var delay = 1000*60*10; //query every 10minutes milliseconds
+  var task = new PeriodicTask(delay, function () {
+      var T = new Twit({
+      consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
+      consumer_secret: "jC4w7f9O8LsCFEcckFa8zcELFJWsT5TSo7pfrQIl6eM1tltS3R",
+      access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
+      access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
+    });
+    T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
+      if (err) {
+        //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
+      }
+      //req.flash('success', { msg: 'Tweet has been posted.'});
+      console.log("Success");
+      //return res.redirect('/');
+    });
+  });
+
+  task.run();
+
 function distance(lat1, lon1, lat2, lon2) {
 	var R = 6371; // Radius of the earth in km
 	var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -100,6 +126,7 @@ function distance(lat1, lon1, lat2, lon2) {
 	var miles = d * .621371;
 	return miles;
 };
+
 
 function deg2rad(deg) {
   return deg * (Math.PI/180)
