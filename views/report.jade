@@ -9,8 +9,8 @@ block content
 		input(type='hidden', name='_csrf', value=_csrf)
 		.form-group
 			label(class='col-sm-2 control-lable' for='map') Is this the correct location?
-			.col-sm-12
-				#mapholder(style="width:500px;height:380px;")
+			.col-lg-12
+				#mapholder(style="width:100%;height:600px;")
 				<label class="radio-inline">
 				<input type="radio" name="map">Yes
 				</label>
@@ -56,6 +56,8 @@ block content
 					
 					window.onload = getLocation;
 		.form-group
+		h3 Types of Occurrences 
+		hr
 		.form-group
 			label(class='col-sm-2 control-label', for='Zika') Zika
 			.col-sm-2
