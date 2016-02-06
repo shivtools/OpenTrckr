@@ -1,5 +1,14 @@
 var PeriodicTask = require('periodic-task');
 var Twit = require('twit');
+var clustering = require('density-clustering');
+
+var CartoDB = require('cartodb');
+
+var client = new CartoDB({
+  user: "shivtoolsidass",
+  api_key: "e99e7f7567924034203f0858825d265c652e24c1"
+});
+
 
 exports.getReport = function(req, res) {
   res.render('report', {
@@ -49,12 +58,6 @@ exports.postReport = function(req, res) {
 	  console.log("NO LAT/LNG");
   }
   else{
-		var CartoDB = require('cartodb');
-
-		var client = new CartoDB({
-			user: "shivtoolsidass",
-			api_key: "e99e7f7567924034203f0858825d265c652e24c1"
-		});
 
 		client.on("connect", function () {
 			client.query("SELECT * from zika WHERE username='"+req.user._id+"'", function(err, data){
@@ -96,25 +99,95 @@ exports.postReport = function(req, res) {
 //periodically run function to check if there are enough victims in an area.
 //if yes, then tweet government with this information
 
-  var delay = 1000*60*10; //query every 10minutes milliseconds
-  var task = new PeriodicTask(delay, function () {
-      var T = new Twit({
-      consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
-      consumer_secret: "jC4w7f9O8LsCFEcckFa8zcELFJWsT5TSo7pfrQIl6eM1tltS3R",
-      access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
-      access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
-    });
-    T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
-      if (err) {
-        //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
-      }
-      //req.flash('success', { msg: 'Tweet has been posted.'});
-      console.log("Success");
-      //return res.redirect('/');
-    });
-  });
+function query(){
 
-  task.run();
+    var coordinates = [];
+
+         client.on("connect", function(){
+            client.query("SELECT * FROM zika", function(err, data){
+            if(err){
+              //reject("Rejected");
+            }
+            data.rows.forEach(function(entry){
+              coordinates.push([entry.lat, entry.lng]);
+            });
+            //adds to coordiantes fine :)!
+            var dbscan = new clustering.DBSCAN();
+            // parameters: 0.001 - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
+            var clusters = dbscan.run(coordinates, 0.1, 2);
+
+            var averageClusters = [];
+            var actualValues = [];
+            //add each cluster to an array
+            clusters.forEach(function(cluster){
+              cluster.forEach(function(indexes){
+                actualValues.push(coordinates[indexes]);
+              })
+              averageClusters.push(coordinatesAvg(actualValues));
+              actualValues = [];
+            });
+            console.log(averageClusters);
+         });
+      });
+
+      client.connect();
+}
+
+//algorithm to calculate average of coordinates in an array
+function coordinatesAvg(arr){
+        var x = 0;
+        var y = 0;
+        var z = 0;
+
+        arr.forEach(function(geoCoordinate){
+            var latitude = geoCoordinate[0] * Math.PI / 180;
+            var longitude = geoCoordinate[1] * Math.PI / 180;
+
+            x += Math.cos(latitude) * Math.cos(longitude);
+            y += Math.cos(latitude) * Math.sin(longitude);
+            z += Math.sin(latitude);
+        });
+
+        var total = arr.length;
+
+        x = x / total;
+        y = y / total;
+        z = z / total;
+
+        var centralLongitude = Math.atan2(y, x);
+        var centralSquareRoot = Math.sqrt(x * x + y * y);
+        var centralLatitude = Math.atan2(z, centralSquareRoot);
+
+        return [centralLatitude * 180 / Math.PI, centralLongitude * 180 / Math.PI];
+}
+
+query();
+
+
+//console.log(clusters, dbscan.noise);
+
+  
+
+var delay = 1000*60*10; //query every 10minutes milliseconds
+var task = new PeriodicTask(delay, function () {
+    var T = new Twit({
+    consumer_key: "6dOR1JKhr5BarNhGbNA3TG5Bt",
+    consumer_secret: "jC4w7f9O8LsCFEcckFa8zcELFJWsT5TSo7pfrQIl6eM1tltS3R",
+    access_token: "695975838752337920-4ZLvDgFSflFZsZCJful6KqrN88FxLW5",
+    access_token_secret: "2PyicFNjrImeyk85ymx2mEGmRxuHQt6AAcFD9uYghfIaU"
+  });
+  T.post('statuses/update', { status: "Sample tweet"}, function(err, data, response) {
+    if (err) {
+      //req.flash('errors', {msg: 'Your tweet was not posted, please try again!'});
+    }
+    //req.flash('success', { msg: 'Tweet has been posted.'});
+    console.log("Success");
+    //return res.redirect('/');
+  });
+});
+
+  //task.run(); //THIS MUST BE COMMENTED OUT
+
 
 function distance(lat1, lon1, lat2, lon2) {
 	var R = 6371; // Radius of the earth in km
