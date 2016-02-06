@@ -21,6 +21,9 @@ var expressValidator = require('express-validator');
 var sass = require('node-sass-middleware');
 var _ = require('lodash');
 
+var CartoDB = require('cartodb');
+
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  *
