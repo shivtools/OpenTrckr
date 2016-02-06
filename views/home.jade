@@ -1,58 +1,43 @@
 extends layout
 
 block content
-  h1 ZikaTracker
-  p.lead Crush that mosquito yo.
-  hr
-  .row
-    .col-sm-6
-      link(rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css")
-      script(src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js")
-      script.
-        var map;
-        function init(){
-          // initiate leaflet map
-          map = new L.Map('cartodb-map', { 
-            center: [40,-98],
-            zoom: 4
-          })
+	link(rel="stylesheet", href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css")
+	h1 HopHacks 2016 Zika and Disease Tracker
+	p.lead Tracking Disease, Mosquitos, and Directing Help
+	hr
+	.row
+		.col-sm-12
+			h2 Live Map
+			p Up to date map of your local area
+			#map
+			script(src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js")
 
-          L.tileLayer('https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png', {
-            attribution: 'Mapbox <a href="http://mapbox.com/about/maps" target="_blank">Terms &amp; Feedback</a>'
-          }).addTo(map);
+	script.
+		function main() {
+		cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json', {
+			shareable: true,
+			title: true,
+			description: true,
+			search: true,
+			tiles_loader: true,
+			center_lat: 0,
+			center_lon: 0,
+			zoom: 2
+		})
+		.done(function(vis, layers) {
+		  // layer 0 is the base layer, layer 1 is cartodb layer
+		  // setInteraction is disabled by default
+		  layers[1].setInteraction(true);
+		  layers[1].on('featureOver', function(e, latlng, pos, data) {
+			cartodb.log.log(e, latlng, pos, data);
+		  });
 
-          var layerUrl = 'http://documentation.cartodb.com/api/v2/viz/236085de-ea08-11e2-958c-5404a6a683d5/viz.json';
+		  // you can get the native map to work with it
+		  var map = vis.getNativeMap();
+		})
+		.error(function(err) {
+		  console.log(err);
+		});
+		}
 
-          // change the query for the first layer
-          var subLayerOptions = {
-            sql: "SELECT * FROM example_cartodbjs_1 where adm0_a3 = 'USA'",
-            cartocss: "#example_cartodbjs_1{marker-fill: #109DCD; marker-width: 5; marker-line-color: white; marker-line-width: 0;}"
-          }
-
-          cartodb.createLayer(map, layerUrl)
-            .addTo(map)
-            .on('done', function(layer) {
-              layer.getSubLayer(0).set(subLayerOptions);
-              console.log("carto done");
-            }).on('error', function() {
-              console.log("error");
-            });
-        }
-
-        window.onload = init;  
-    <div id='cartodb-map' style="width:800px; height:600px; margin:0 auto;"></div>
-    .col-sm-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-default(href='#', role='button') View details »
-    .col-sm-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-default(href='#', role='button') View details »
-    .col-sm-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-default(href='#', role='button') View details »
+		window.onload = main();

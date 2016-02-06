@@ -1,0 +1,72 @@
+extends layout
+
+block content
+	.page-header
+		h3 Make A Report
+			
+	form.form-horizontal(role='form', method='POST')
+		input(type='hidden', name='_csrf', value=_csrf)
+		.form-group
+			label(class='col-sm-2 control-lable' for='map') Is this the correct location?
+			.col-sm-12
+				#mapholder
+				button.btn-success Yes
+				button.btn-danger No
+				script.
+					var x = document.getElementById("mapholder");
+					function getLocation() {
+					if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(showPosition, showError);
+					} else {
+					x.innerHTML = "Geolocation is not supported by this browser.";
+					}
+					}
+
+					function showPosition(position) {
+					var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+					var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+					+latlon+"&zoom=14&size=400x300&sensor=false";
+					document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+					}
+
+					function showError(error) {
+					switch(error.code) {
+					case error.PERMISSION_DENIED:
+					x.innerHTML = "User denied the request for Geolocation."
+					break;
+					case error.POSITION_UNAVAILABLE:
+					x.innerHTML = "Location information is unavailable."
+					break;
+					case error.TIMEOUT:
+					x.innerHTML = "The request to get user location timed out."
+					break;
+					case error.UNKNOWN_ERROR:
+					x.innerHTML = "An unknown error occurred."
+					break;
+					}
+					}
+					
+					window.onload = getLocation;
+		.form-group
+		.form-group
+			label(class='col-sm-2 control-label', for='Zika') Zika
+			.col-sm-2
+				input.form-control(type='checkbox', name='Zika', id='zika')
+		.form-group
+			label(class='col-sm-2 control-label', for='malaria') Malaria
+			.col-sm-2
+				input.form-control(type='checkbox', name='Malaria', id='malaria')
+		.form-group
+			label(class='col-sm-2 control-label', for='dengue') Dengue Fever
+			.col-sm-2
+				input.form-control(type='checkbox', name='Dengue', id='dengue')
+		.form-group
+			label(class='col-sm-2 control-label', for='water') Standing Water
+			.col-sm-2
+				input.form-control(type='checkbox', name='water', id='water')
+		.form-group
+			.col-sm-offset-2.col-sm-6
+			button.btn.btn-success(type='submit')
+				i.fa.fa-envelope
+				| Report
