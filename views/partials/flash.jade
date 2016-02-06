@@ -1,18 +1,30 @@
 if messages.errors
-  .alert.alert-danger.fade.in
-    button.close(type='button', data-dismiss='alert')
-      i.fa.fa-times-circle-o
-    for error in messages.errors
-      div= error.msg
+	.row
+		.col-lg-2
+		.col-md-8
+			.alert.alert-danger.fade.in
+				button.close(type='button', data-dismiss='alert')
+					i.fa.fa-times-circle-o
+				for error in messages.errors
+					div= error.msg
+		.col-lg-2
 if messages.info
-  .alert.alert-info.fade.in
-    button.close(type='button', data-dismiss='alert')
-      i.fa.fa-times-circle-o
-    for info in messages.info
-      div= info.msg
+	.row
+		.col-lg-2
+		.col-md-8
+			.alert.alert-info.fade.in
+				button.close(type='button', data-dismiss='alert')
+					i.fa.fa-times-circle-o
+				for info in messages.info
+					div= info.msg
+		.col-lg-2
 if messages.success
-  .alert.alert-success.fade.in
-    button.close(type='button', data-dismiss='alert')
-      i.fa.fa-times-circle-o
-    for success in messages.success
-      div= success.msg
+	.row
+		.col-lg-2
+		.col-md-8
+			.alert.alert-success.fade.in
+				button.close(type='button', data-dismiss='alert')
+					i.fa.fa-times-circle-o
+				for success in messages.success
+					div= success.msg
+		.col-lg-2
