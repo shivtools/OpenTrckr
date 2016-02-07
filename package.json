@@ -1,9 +1,9 @@
 {
-  "name": "hackathon-starter",
-  "version": "3.4.0",
+  "name": "zika-find",
+  "version": "2.0.6",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": "https://github.com/shivtools/HopHacks.git"
   },
   "scripts": {
     "start": "node app.js",
