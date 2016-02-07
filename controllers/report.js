@@ -56,7 +56,7 @@ exports.postReport = function(req, res) {
 		});
 
 		client.on("connect", function() {
-			client.query("SELECT lat, lng, timestamp from zika WHERE username='"+req.user._id+"' ORDER BY timestamp DESC LIMIT 1", function(err, data){
+			client.query("SELECT lat, lng, timestamp from zika WHERE username='"+req.user._id+"' ORDER BY timestamp DESC", function(err, data){
 				if(data.total_rows > 0){
 					for(var i=0; i<data.total_rows; i++){
 						if(distance(lat, lng, data.rows[i].lat, data.rows[i].lng) < 2 && Math.floor(Date.now() / 1000)-data.rows[i].timestamp < (60*60*24)){
