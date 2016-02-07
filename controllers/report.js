@@ -8,8 +8,7 @@ exports.getReport = function(req, res) {
 
 exports.postReport = function(req, res) {
 	var zika = req.body.Zika;
-	var malaria = req.body.Malaria;
-	var dengue = req.body.Dengue;
+	var med = req.body.med;
 	var water = req.body.water;
 	var lat = req.body.lat;
 	var lng = req.body.lon;
@@ -20,26 +19,20 @@ exports.postReport = function(req, res) {
 	else{
 		zika = 1;
 	}
-	if(malaria == undefined){
-		malaria = 0;
-	}
-	else{
-		malaria = 1;
-	}
 	if(water == undefined){
 		water = 0;
 	}
 	else{
 		water = 1;
 	}
-	if(dengue == undefined){
-		dengue = 0;
+	if(med == undefined){
+		med = 0;
 	}
 	else{
-		dengue = 1;
+		med = 1;
 	}
 
-	if(dengue + water + malaria + zika < 1){
+	if(med + water + zika < 1){
 		req.flash('errors', {msg: 'Failure! You must select at least 1 problem.' });
 		return res.redirect('/');
 	}
@@ -72,7 +65,7 @@ exports.postReport = function(req, res) {
 					}
 					client.query("SELECT CDB_LatLng("+lat+", "+lng+")", function(err2, data2){
 						var latlng = data2.rows[0].cdb_latlng;
-						var sql = "INSERT INTO zika (cartodb_id, the_geom, lat, lng, dengue, malaria, zika, water, username, timestamp, medical) VALUES ('"+id+"', '"+latlng+"','"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+", '0')";
+						var sql = "INSERT INTO zika (cartodb_id, the_geom, lat, lng, zika, water, username, timestamp, medical) VALUES ('"+id+"', '"+latlng+"','"+lat+"', '"+lng+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+", '"+med+"')";
 						client.query(sql, function (err3, data3) {
 							console.log(data3);
 							if(err3 == null){
