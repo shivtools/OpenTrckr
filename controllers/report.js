@@ -116,8 +116,8 @@ function query(){
             
             //cluster algorithm (dbscan)
             var dbscan = new clustering.DBSCAN();
-            // parameters: 0.001 - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
-            var clusters = dbscan.run(coordinates, 0.1, 2);
+            // parameters: 0.015 is about 1 mile radius - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
+            var clusters = dbscan.run(coordinates, 0.015, 2);
 
             var averageClusters = [];
             var actualValues = [];
