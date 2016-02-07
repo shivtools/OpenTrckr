@@ -15,11 +15,30 @@ html {
 }
 
 body {
+  background-color:#c2d6d6;
   padding-top: 60px;
   margin-bottom: 75px;
 }
+#map {
+  box-shadow: 15px 15px 30px rgba(52,73,94, 0.9);
+}
 
+.container-fluid {
+   .row .col-sm-8 {
+     background-color: rgba(52,73,94, 0.5);
+     border-radius: 100px;
+     bottom: 80px;
+      > h1 {
+      margin-top: 75px;
+      bottom:0px;
+      > p {
+      }
+      }
+  }
+}
 footer {
+  background-color:#34495e;
+  color:white;
   position: absolute;
   bottom: 0;
   width: 100%;
