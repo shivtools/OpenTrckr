@@ -5190,7 +5190,7 @@ tbody.collapse.in {
 
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
   background-color: rgba(26, 117, 255, 0.3);
-  border-radius: 25px;
+  border-radius: 5px;
 }
 
 .navbar-default .navbar-text {
@@ -5203,13 +5203,13 @@ tbody.collapse.in {
 
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
   background-color: rgba(26, 117, 255, 0.3);
-  border-radius: 25px;
+  border-radius: 5px;
 }
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-  color: black;
+  color: white;
   background-color: #1a75ff;
-  border-radius: 25px;
+  border-radius: 5px;
 }
 
 .navbar-default .navbar-nav > .disabled > a, .navbar-default .navbar-nav > .disabled > a:hover, .navbar-default .navbar-nav > .disabled > a:focus {
@@ -11700,19 +11700,13 @@ body {
 }
 
 #map {
-  box-shadow: 15px 15px 30px rgba(52, 73, 94, 0.9);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .container-fluid .row .col-sm-8 {
-  background-color: rgba(52, 73, 94, 0.5);
-  border-radius: 100px;
-  bottom: 80px;
+  padding-top: 30px;
+  padding-bottom: 20px;
   z-index: -1;
-}
-
-.container-fluid .row .col-sm-8 > h1 {
-  margin-top: 75px;
-  bottom: 0px;
 }
 
 footer {

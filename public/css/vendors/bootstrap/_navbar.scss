@@ -404,7 +404,7 @@
     &:hover,
     &:focus {
       background-color:  rgba(26, 117, 255, 0.3);
-      border-radius: 25px;
+      border-radius: 5px;
     }
   }
 
@@ -419,16 +419,16 @@
       &:hover,
       &:focus {
         background-color:  rgba(26, 117, 255, 0.3);
-        border-radius: 25px;
+        border-radius: 5px;
       }
     }
     > .active > a {
       &,
       &:hover,
       &:focus {
-        color: black;
+        color: white;
         background-color:  #1a75ff;
-        border-radius: 25px;
+        border-radius: 5px;
 ;
       }
     }
