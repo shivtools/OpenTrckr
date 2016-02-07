@@ -13,13 +13,13 @@
 			ul.nav.navbar-nav
 				li(class=title=='Home'?'active':undefined)
 					a(href='/') Home
-				li(class=title)
+				li(class=title=='Report a Problem'?'active':undefined)
 					if !user
 						a(href="/login")
-							| Report A Problem
+							| Report a Problem
 					else
 						a(href="/report")
-							| Report A Problem
+							| Report a Problem
 			ul.nav.navbar-nav.navbar-right
 				if !user
 					li(class=title=='Login'?'active':undefined)

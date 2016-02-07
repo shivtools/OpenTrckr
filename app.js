@@ -221,55 +221,53 @@ var PeriodicTask = require('periodic-task');
 var Twit = require('twit');
 var clustering = require('density-clustering');
 
-var client = new CartoDB({
-  user: "shivtoolsidass",
-  api_key: "e99e7f7567924034203f0858825d265c652e24c1"
-});
 var mySet = {}; //holds the number of unqiue clusters
 
 function query(){
+	var client = new CartoDB({
+		user: "shivtoolsidass",
+		api_key: "e99e7f7567924034203f0858825d265c652e24c1"
+	});
+	var coordinates = [];
 
-    var coordinates = [];
+	client.on("connect", function(){
+		//connect to server, get all coordinates, and find main clusters of coordinates so that they can be tweeted.
+		client.query("SELECT * FROM zika", function(err, data){
+		if(err){
+		  //reject("Rejected");
+		}
+		data.rows.forEach(function(entry){
+			coordinates.push([entry.lat, entry.lng]);
+		});
 
-         client.on("connect", function(){
-          //connect to server, get all coordinates, and find main clusters of coordinates so that they can be tweeted.
-            client.query("SELECT * FROM zika", function(err, data){
-            if(err){
-              //reject("Rejected");
-            }
-            data.rows.forEach(function(entry){
-              coordinates.push([entry.lat, entry.lng]);
-            });
-            
-            //cluster algorithm (dbscan)
-            var dbscan = new clustering.DBSCAN();
-            // parameters: 0.015 is about 1 mile radius - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
-            var clusters = dbscan.run(coordinates, 0.015, 2);
+		//cluster algorithm (dbscan)
+		var dbscan = new clustering.DBSCAN();
+		// parameters: 0.015 is about 1 mile radius - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
+		var clusters = dbscan.run(coordinates, 0.015, 2);
 
-            var averageClusters = [];
-            var actualValues = [];
+		var averageClusters = [];
+		var actualValues = [];
 
-            //add each cluster to an array
-            clusters.forEach(function(cluster){
-              cluster.forEach(function(indexes){
-                actualValues.push(coordinates[indexes]);
-              })
-              averageClusters.push(coordinatesAvg(actualValues));
-              actualValues = [];
-            });
+		//add each cluster to an array
+		clusters.forEach(function(cluster){
+		  cluster.forEach(function(indexes){
+			actualValues.push(coordinates[indexes]);
+		  })
+		  averageClusters.push(coordinatesAvg(actualValues));
+		  actualValues = [];
+		});
 
-            averageClusters.forEach(function(pair){
-				if(mySet[pair] != true){
-					mySet[pair] = true; // put cluster in set
-					sendTweet("There is a problem here " + pair, "@ZikaFind");
-				}
-            });            //at the end of these loops, average clusters will hold data on main cluster positions 
-            //generated using cluster algorithm
-            console.log(averageClusters);
-         });
-      });
-
-      client.connect();
+		averageClusters.forEach(function(pair){
+			if(mySet[pair] != true){
+				mySet[pair] = true; // put cluster in set
+				sendTweet("There is a problem here " + pair, "@ZikaFind");
+			}
+		});            //at the end of these loops, average clusters will hold data on main cluster positions 
+		//generated using cluster algorithm
+		console.log(averageClusters);
+		});
+	});
+	client.connect();
 }
 
 //algorithm to calculate average of coordinates in an array
