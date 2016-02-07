@@ -26,7 +26,7 @@ OpenTrckr makes use of Google Maps' API to render a user's current coordinates. 
 
 OpenTrckr demonstrates its ultimate usefulness with its ability to alert agencies that need to reach out to areas in need of help, but the lack of staff and comprehensive data on Zika victims prevents them from efficiently reaching victims on time. Geo-tags are present on the map in clusters, and this makes rendering a single set of coordinates (to alert an agency with) problematic. An example can of a cluster is demonstrated below.
 
-![Cluster](https://raw.githubusercontent.com/shivtools/HopHacks/master/markdown/cluster.png)
+![Cluster](https://raw.githubusercontent.com/shivtools/HopHacks/master/markdown/clusters.png)
 
 OpenTrckr makes use of a *data clustering algorithm* known as **[Density-based spatial clustering of applications with noise (DBSCAN)](https://en.wikipedia.org/wiki/DBSCAN)** to narrow down on a single set of coordinates that best represents the cluster. A visual representation of this clustering algorithm is represented below.
 
