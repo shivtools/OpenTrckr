@@ -4,7 +4,7 @@
 
 ## Motivation
 
-In developing nations with large populations it is quite challenging for governments/medical authorities/non-profit organizations to deploy assistance to populations afflicted with the Zika virus. There ~~is~~ was also a lack of a database which holds information regarding occurences of the disease. OpenTrckr's motivation is to resolve this problem. 
+In developing nations with large populations it is quite challenging for governments/medical authorities/non-profit organizations to deploy assistance to populations afflicted with the Zika virus. There is also a lack of a database which holds information regarding occurences of the disease. OpenTrckr's motivation is to resolve this problem. 
 
 Opentrckr provides live access to data regarding user reported instances of the disease, stagnant water bodies and location of medical camps - crucial information to both victims and organizations alike. 
 
