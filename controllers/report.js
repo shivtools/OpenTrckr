@@ -9,6 +9,8 @@ var client = new CartoDB({
   api_key: "e99e7f7567924034203f0858825d265c652e24c1"
 });
 
+var mySet = {}; //holds the number of unqiue clusters
+
 
 exports.getReport = function(req, res) {
   res.render('report', {
@@ -130,7 +132,12 @@ function query(){
             });
 
             averageClusters.forEach(function(pair){
-              sendTweet("There is a reported incidence of Zika here " + pair, "@ZikaFind. Please send assistance to this location.");
+				console.log("here is my set: " + mySet);
+				if(mySet[pair] != true){
+					mySet[pair] = true; // put cluster in set
+					//console.log(" this check works");
+					sendTweet("There is a problemo here " + pair, "@ZikaFind");
+				}
             });            //at the end of these loops, average clusters will hold data on main cluster positions 
             //generated using cluster algorithm
             console.log(averageClusters);
