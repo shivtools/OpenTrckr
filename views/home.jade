@@ -17,12 +17,12 @@ block content
 				function main() {
 				cartodb.createVis('map', 'https://shivtoolsidass.cartodb.com/api/v2/viz/3e08ad58-ccaf-11e5-94fe-0ea31932ec1d/viz.json', {
 				shareable: true,
-				title: true,
-				description: true,
-				search: true,
+				title: false,
+				description: false,
+				search: false,
 				tiles_loader: true,
-				center_lat: 0,
-				center_lon: 0,
+				center_lat: 13.636263,
+				center_lon: -72.966396,
 				zoom: 3
 				})
 				.done(function(vis, layers) {
