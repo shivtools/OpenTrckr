@@ -1,5 +1,4 @@
 # OpenTrckr
-======
 
 **In the last year, the instances of cases of the Zika virus have exploded, and unfortunately the demographic that is the worst affected is pregnant women and their unborn children. Zika has been linked to an increase in the rate of the birth defect known as [microcephaly](http://www.cdc.gov/ncbddd/birthdefects/microcephaly.html) - a very small head and brain size.**
 
@@ -9,14 +8,15 @@ In developing nations with large populations it is quite challenging for governm
 
 Opentrckr provides live access to data regarding user reported instances of the disease, stagnant water bodies and location of medical camps - crucial information to both victims and organizations alike. 
 
-## Functionality: 
+## Functionality 
 
-With real time data visualizations rendered using the awesome CartoDB API: ![Map of CartoDB visualization](https://github.com/shivtools/HopHacks/markdown/map.png), users are able to zoom in and out and keep track of the following: 
+With real time data visualizations rendered using the awesome CartoDB API: ![Map of CartoDB visualization](https://raw.githubusercontent.com/shivtools/HopHacks/master/markdown/map.png), users are able to zoom in and out and keep track of the following: 
 
 * **Cases of Zika occurences** - thereby warning pregnant women and other vulnerable populations of where the disease is prevalent.
 * **Stagnant water bodies** - that could potentially breed mosquitoes. This feature is useful for government organizations to conveniently deploy resources to spray these water bodies early and efficiently.
 * **Location of medical facilities** - non-profit organizations and governmental organizations that are providing access to victims afflicted with Zika. Mitigates the effort and risk of searching for resources and thereby being exposed to mosquitoes.
 
+OpenTrckr makes use of Google Maps' API to render a user's current coordinates. If current coordinates are not correct (which is unlikely), the user is allowed to place a crosshair wherever they'd like. Checks have been installed to make sure that a user *cannot* add more than one tag in a 24 hour period in a 2 mile radius. This check was installed to make sure that a user cannot spam the app with false tags (making our data more authentic). ![Google Maps](https://raw.githubusercontent.com/shivtools/HopHacks/master/markdown/googlemaps.png)
 
 
 ## Our Stack
@@ -28,7 +28,7 @@ OpenTrckr is a Node.js/Express app that uses Jade as its templating engine. Cart
 Our awesome team consists of 3 current University of Richmond undergrads, [Alexandru Pana](https://github.com/FFMMM), [Michael Dombrowski](https://github.com/md100play), [Shiv Toolsidass (Myself :) )](https://github.com/shivtools) and [Otega Owho-Ovuakporie](https://github.com/otegaoo) of Lincoln University, PA. We came to HopHacks, consumed far too much Redbull/Gatorade/junk food and coded the weekend away - a wonderful experience overall! We hope that you find OpenTrckr useful and that our app will benefit people. We plan on extending the functionality of the app in the future - more to come! 
 
 
-## Citations: 
+## Citations
 
 * [10 Essential Facts about the Zika virus](http://www.everydayhealth.com/news/10-essential-facts-about-zika-virus/)
 
