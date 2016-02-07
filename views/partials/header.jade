@@ -16,10 +16,10 @@
 				li(class=title)
 					if !user
 						a(href="/login")
-							button.btn.btn-large.btn-warning Report A Problem
+							| Report A Problem
 					else
 						a(href="/report")
-							button.btn.btn-large.btn-warning Report A Problem
+							| Report A Problem
 			ul.nav.navbar-nav.navbar-right
 				if !user
 					li(class=title=='Login'?'active':undefined)

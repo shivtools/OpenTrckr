@@ -7,26 +7,23 @@ block content
 		.col-sm-8(style="text-align:center")
 			h1 HopHacks 2016 Zika and Disease Tracker
 			p.lead Tracking Disease, Mosquitoes, and Directing Help
-			hr
 		.col-lg-2
 	.row
 		.col-sm-1
 		.col-sm-10
-			h2 Live Map
-			p Up to date map of your local area
 			#map(style="width:100%; height: 800px")
 			script(src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js")
 			script.
 				function main() {
 				cartodb.createVis('map', 'https://shivtoolsidass.cartodb.com/api/v2/viz/3e08ad58-ccaf-11e5-94fe-0ea31932ec1d/viz.json', {
-				shareable: true,
-				title: true,
-				description: true,
-				search: true,
+				shareable: false,
+				title: false,
+				description: false,
+				search: false,
 				tiles_loader: true,
-				center_lat: 0,
-				center_lon: 0,
-				zoom: 3
+				center_lat: 13.636263,
+				center_lon: -72.966396,
+				zoom: 4
 				})
 				.done(function(vis, layers) {
 				layers[1].setInteraction(true);

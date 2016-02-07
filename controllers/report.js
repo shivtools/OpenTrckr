@@ -9,6 +9,8 @@ var client = new CartoDB({
   api_key: "e99e7f7567924034203f0858825d265c652e24c1"
 });
 
+var mySet = {}; //holds the number of unqiue clusters
+
 
 exports.getReport = function(req, res) {
   res.render('report', {
@@ -58,41 +60,40 @@ exports.postReport = function(req, res) {
 	  console.log("NO LAT/LNG");
   }
   else{
-
-		client.on("connect", function () {
-			client.query("SELECT * from zika WHERE username='"+req.user._id+"'", function(err, data){
-				if(data.total_rows > 0){
-					for(var i=0; i<data.total_rows; i++){
-						if(distance(lat, lng, data.rows[i].lat, data.rows[i].lng) < 2 && Math.floor(Date.now() / 1000)-data.rows[i].timestamp < (60*60*24)){
-							req.flash('errors', {msg: 'Failure! You have submitted something too close to another submission.' });
-							return res.redirect('/');
-						}
+	client.on("connect", function () {
+		client.query("SELECT * from zika WHERE username='"+req.user._id+"'", function(err, data){
+			if(data.total_rows > 0){
+				for(var i=0; i<data.total_rows; i++){
+					if(distance(lat, lng, data.rows[i].lat, data.rows[i].lng) < 2 && Math.floor(Date.now() / 1000)-data.rows[i].timestamp < (60*60*24)){
+						req.flash('errors', {msg: 'Failure! You have submitted something too close to another submission.' });
+						return res.redirect('/');
 					}
 				}
-				var sql = "SELECT cartodb_id from zika ORDER BY cartodb_id DESC LIMIT 1";
-				client.query(sql, function (err, data) {
-					var id = 0;
-					if(data.total_rows != 0){
-						id = data.rows[0].cartodb_id+1;
-					}
-					if(err == null){
-						client.query("SELECT CDB_LatLng("+lat+", "+lng+")", function(err, data){
-							var latlng = data.rows[0].cdb_latlng;
-							var sql = "INSERT INTO zika (cartodb_id, the_geom, lat, lng, dengue, malaria, zika, water, username, timestamp) VALUES ('"+id+"', '"+latlng+"','"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+")";
-							client.query(sql, function (err, data) {
-								console.log(err);
-								console.log(data);
-								if(err == null){
-									req.flash('success', { msg: 'Success! Thank you for your submission.' });
-									return res.redirect('/');
-								}
-							});
+			}
+			var sql = "SELECT cartodb_id from zika ORDER BY cartodb_id DESC LIMIT 1";
+			client.query(sql, function (err, data) {
+			var id = 0;
+			if(data.total_rows != 0){
+				id = data.rows[0].cartodb_id+1;
+			}
+			if(err == null){
+				client.query("SELECT CDB_LatLng("+lat+", "+lng+")", function(err, data){
+					var latlng = data.rows[0].cdb_latlng;
+					var sql = "INSERT INTO zika (cartodb_id, the_geom, lat, lng, dengue, malaria, zika, water, username, timestamp) VALUES ('"+id+"', '"+latlng+"','"+lat+"', '"+lng+"', '"+dengue+"', '"+malaria+"', '"+zika+"', '"+water+"', '"+req.user._id+"', "+Math.floor(Date.now() / 1000)+")";
+					client.query(sql, function (err, data) {
+						console.log(err);
+						console.log(data);
+						if(err == null){
+							req.flash('success', { msg: 'Success! Thank you for your submission.' });
+							return res.redirect('/');
+						}
 					});
-					}
 				});
+				}
 			});
 		});
-		client.connect();
+	});
+	client.connect();
   }
 };
 
@@ -131,7 +132,12 @@ function query(){
             });
 
             averageClusters.forEach(function(pair){
-              sendTweet("There is a reported incidence of Zika here " + pair, "@ZikaFind. Please send assistance to this location.");
+				console.log("here is my set: " + mySet);
+				if(mySet[pair] != true){
+					mySet[pair] = true; // put cluster in set
+					//console.log(" this check works");
+					sendTweet("There is a problemo here " + pair, "@ZikaFind");
+				}
             });            //at the end of these loops, average clusters will hold data on main cluster positions 
             //generated using cluster algorithm
             console.log(averageClusters);
