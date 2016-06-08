@@ -23,7 +23,6 @@ var _ = require('lodash');
 
 var CartoDB = require('cartodb');
 
-
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  *
@@ -228,6 +227,7 @@ function query(){
 		user: "shivtoolsidass",
 		api_key: "e99e7f7567924034203f0858825d265c652e24c1"
 	});
+
 	var coordinates = [];
 
 	client.on("connect", function(){
@@ -242,7 +242,7 @@ function query(){
 
 		//cluster algorithm (dbscan)
 		var dbscan = new clustering.DBSCAN();
-		// parameters: 0.015 is about 1 mile radius - neighborhood radius, 2 - number of points in neighborhood to form a cluster 
+		// parameters: 0.015 is about 1 mile radius - neighborhood radius, 2 - number of points in neighborhood to form a cluster
 		var clusters = dbscan.run(coordinates, 0.015, 2);
 
 		var averageClusters = [];
@@ -262,7 +262,7 @@ function query(){
 				mySet[pair] = true; // put cluster in set
 				sendTweet("There is a problem here " + pair, "@ZikaFind");
 			}
-		});            //at the end of these loops, average clusters will hold data on main cluster positions 
+		});            //at the end of these loops, average clusters will hold data on main cluster positions
 		//generated using cluster algorithm
 		console.log(averageClusters);
 		});
@@ -304,7 +304,7 @@ var task = new PeriodicTask(delay, function () {
 	console.log("running task!");
 });
 task.run();
-  
+
 function sendTweet(tweet, twitterHandle){
     console.log("Tweet received by sendTweet " + tweet);
 	var T = new Twit({
@@ -324,9 +324,9 @@ function sendTweet(tweet, twitterHandle){
 function distance(lat1, lon1, lat2, lon2) {
 	var R = 6371; // Radius of the earth in km
 	var dLat = deg2rad(lat2-lat1);  // deg2rad below
-	var dLon = deg2rad(lon2-lon1); 
-	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	var dLon = deg2rad(lon2-lon1);
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 	var d = R * c; // Distance in km
 	var miles = d * .621371;
 	return miles;
