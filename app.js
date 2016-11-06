@@ -223,6 +223,7 @@ var clustering = require('density-clustering');
 var mySet = {}; //holds the number of unqiue clusters
 
 function query(){
+	
 	var client = new CartoDB({
 		user: "shivtoolsidass",
 		api_key: "e99e7f7567924034203f0858825d265c652e24c1"
